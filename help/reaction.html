@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<TITLE>Jaent help reactions</TITLE>
+	<link rel="stylesheet" Type="text/css" href="basic.css">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+
+
+<H1 NAME="Top">Reactions and targets</H1>
+
+<HR>
+<A HREF="../help.html">Index</A></br>
+<A HREF="#PPR">Primary Particles : Reaction</A></br>
+<A HREF="#PPG">Primary Particles : Generators</A></br>
+<A HREF="#RT">Real Targets</A></br>
+<A HREF="#SD">Secondary Particles</A></br>
+<A HREF="#DC">Decay</A></br><HR>
+<A HREF="#CommandList">Command List</A>
+<HR>
+0  VALUES IN OPTIONAL PARAMETERS</br>
+WILL USE DEFAULTS NOT ZERO
+<HR><H2><A NAME="PPR" HREF="#Top">Primary Particles : Reaction</A></H2><HR>
+
+	For a simple reaction, neglecting target effects,</br>
+	Beam, Target, Recoil and Ejectile can all be set with the single a function.</br>
+	All can be changed later, including adding target effects.
+	<p class="code">
+	void set_reaction(int beam_Z,int beam_A,int targ_Z,int targ_A,int reco_Z,int reco_A,double beam_MeV=0.0)</br>
+	void set_reaction(string beam_Z,int beam_A,string targ_Z,int targ_A,string reco_Z,int reco_A,double beam_MeV=0.0)
+	</p>
+	You can use chemical symbol "Zr" etc in the later function</br>
+
+	<small>
+	The recoil is the target like for distributions.</br>
+	In fusion reaction recoil is the compound.</br>
+	In decay reactions the recoil decays.</br>
+	Ejectile is calculated automatically.</br>
+	</small>
+
+<HR>
+	The reaction constituents can also be set individually, or overwritten</br>
+	<p class="code">
+	void set_beam(int/string Z, int A, double MeV=0.0,double mass=0.0)</br>
+	void set_targ(int/string Z, int A, double mass=0.0)</br>
+	void set_reco(int/string Z, int A, double mass=0.0)</br>
+	void set_ejec(int/string Z, int A, double mass=0.0)</br>
+	</p>
+	<small>
+	Set beam+target first, unless using particle "gun".</br>	
+	Ejectile is changed automatically to balance reaction (setting ejectile changes recoil).</br>
+	Using the individual functions allows for overriding the automatic mass value (amu), which is NOT used to adjust Q-value or for excited recoil.</br>
+	Ejectile is calculated automatically.</br>
+	</small>
+	
+<HR>	
+	Following setting a beam and targer,</br>
+	the recoil and ejectile can be set automatically by</br>
+	<p class="code">
+	void set_elastic()</br>
+	void set_fusion(double mass=0)</br>
+	double set_rutherford(double thetamin=0.1,double thetamax=pi)</br>
+	</p>
+	<small>
+	set_rutherford: sets elastic, changes distributions and returns the cross-section in mb.</br>
+	</small>
+<HR>	
+	The beam energy may be set or changed at any time</br>
+	<p class="code">
+	void set_E_beam(double MeV)</br>
+	</p>
+	<small>
+		If the reaction is set to fusion, setting E_beam will change compound excitation</br>
+		E_beam is preserved when particles/target changed</br>
+	</small>	
+	
+<HR>
+	Set a specific CoM energy and E_beam will be calculated</br>
+	<p class="code">
+		void set_E_cm_beam(double MeV)</br>
+	</p>
+	<small>
+		E_cm_beam is not preserved by following reaction changes.</br>
+		This function will adjust for target energy loss.</br>
+	</small>
+	
+<HR>
+	The excitation energy of the recoil can be set.</br>
+	Mass table Q-value can be overridden.</br>
+	<p class="code">
+		void set_E_star(double) </br>
+		void set_Q_manual(double MeV) </br> 
+	</p>
+	<small>
+		For a fusion reaction, set_E_star change E_beam.</br>	
+		Manual Q MUST be >0.</br>
+	</small>		
+
+
+<HR><H2><A NAME="PPG" HREF="#Top">Primary Particles : Generators</A></H2><HR>
+
+	If you are NOT interested in reaction kinematics, only in detector behaviour for example,</br>
+	a simple particle generator can be set with either of the following</br>
+	<p class="code">
+		void set_gun(int Z=6,int A=12,double KE_MeV=20.0)</br>
+		void set_gun(int Z,int A,double KE_MeV,target targ)</br>
+	</p>
+	<small>
+		Distribution CAN be set.</br>
+		The latter case allows for basic target interaction of resultant particles.</br>
+		In the latter case the "recoil" is target-like.</br>
+	</small>
+	
+<HR>	
+	If you are only interested in decay events</br>
+	<p class="code">
+		void spontaniously_decay()</br>
+	</p>
+	<small>
+		Cannot be used with "full" target calculations</br>
+	</small>
+
+	
+	
+
+<HR><H2><A NAME="RT" HREF="#Top">Real Targets</A></H2><HR>		
+	
+	If you are interested in energy loss or target stoppers a more complex target calculation can be performed.</br>
+	Create a "target" object (details in class header) with details: compound, thickness, backing).</br>
+	<p class="code">
+		void set_targ(target targ,double targ_mass=0.0)</br>
+	</p>
+	<small>
+		This will set the energy loss material and the reaction target nucleus.</br>
+		Events will use a centre of the target layer assumption.</br>
+	</small></br>
+	
+	Energy loss includes compounds and backing. Reaction is only on specified nucleus.</br>
+	Repeat simulation and do a weighted sum with different target definitions for a compound, </br>
+	and use <i>target.inverse()</i> for backing.
+	
+<HR>	
+	<b>AFTER</b> setting a "target" object for the experiment,</br>
+	one can set more realistic target interactions, either from the predefined list:</br>
+	<p class="code">
+		void set_target_interaction(int select=0)</br>
+	</p>
+	<small>
+		Interaction point is a normalised probability distribution <i>P</i>:</br>
+		1 = P=E</br>
+		2 = P=E^2</br>
+		3 = P=1/E^2</br>
+		4 = P=E * decay below coulomb</br>
+		5 = 4.5 MeV resonance</br>
+	</small></br>
+	Or using a TFormula:
+	<p class="code">
+		void set_target_interaction(TFormula distribution, int variable=0)</br>
+	</p>
+	<small>
+		Variable <i>x</i>:</br>
+		0 -> x=KE_0_tot_CoM</br>
+		1 -> x=P_0_CoM</br>
+		2 -> x=beta_CoM</br>
+		3 -> x=E_star</br>
+	</small></br>
+	Manually retrieved CoM parameters will be calculated at mean of the distribution.</br>
+	
+<HR><H2><A NAME="SD" HREF="#Top">Secondary Particles</A></H2><HR>
+
+	By default ejectile and recoil are emitted isotropically in the CoM.</br>
+	Specific CoM distributions can be set instead.</br>
+	<p class="code">
+		double set_uniform(double thetamin=0, double thetamax=pi)</br>
+		double set_rutherford(double thetamin=0.1,double thetamax=pi)</br>
+		void set_zeroid(double sigma=0.1)//gausian theta mean=0</br>
+	</p>
+	<small>
+		zeroid is a Gaussian centred at theta=0</br>
+		Angles are in radians.</br>
+	</small></br>
+	
+	Distributions specify ejectile (beam-like), but only recoil decays.</br>
+	For a decaying beam-like, manually set recoil as beam-like and call,
+	<p class="code">
+		void reverse_primary_dist()</br>
+	</p></br>
+	
+<HR><H2><A NAME="DC" HREF="#Top">Decay</A></H2><HR>
+
+	The recoil particle can be set to decay in a number of ways.</br>
+	Some more fully implemented that others.</br>
+	No settings under decay reaction effect settings in primary reaction.</br>
+	Recoils are tracked even when they decay. Set detector sensitivity accordingly.</br>
+<HR>	
+	Examples of decay modes that can be set.</br>
+	<p class="code">
+	void set_fission(double M_ratio=1.0, double M_sigma_amu=0.0, double TKE_sigma=0.0,int TKE_version=0)</br>		
+	void set_gamma(double E_gamma_keV=0)</br>
+	</p>
+	<small>
+		TKE_version (0=viola,<0="bent" viola,>0=manual)</br>
+	</small>
+
+<HR>	
+	To add a lifetime to your decay for in flight or in target studies.</br>
+	<p class="code">
+		void set_lifetime_ns(double lifetime=0.0,double density_target=0.0,double density_back=0.0)</br>
+		void set_halflife_ns(double halflife=0.0,double density_target=0.0,double density_back=0.0)</br>
+	</p>
+	<small>
+		MUST be called after primary reaction setup complete.</br>
+		Times in [ns].</br>
+		Densities in [mg/cm3].</br>
+		Densities are optional, but the table is limited.</br>
+	</small>
+<HR>	
+	A stopper experiment may be simulated by setting the target backing as your stopper.</br>
+	Then by specifying a small gap with:</br>
+	<p class="code">
+		void set_stopper_seperation(double seperation)</br>
+	</p>
+	<small>
+		Separation is in [mm].</br>
+		Somewhat limited.</br>
+		For energy loss purposes this still appears as a solid target, particles cannot pass out the gap.
+	</small>	
+
+
+<!--
+<HR>	
+	</br>
+	<p class="code">
+		</br>
+	</p>
+	<small>
+		</br>
+	</small>
+-->	
+
+
+
+
+</br></br>		
+<HR>	
+<HR>	
+<HR>	
+<HR>		
+<HR>	
+<HR>
+<HR>
+<HR>
+<H2><A NAME="CommandList" HREF="#Top">Command List</A> </H2>
+
+<p class="code">
+
+<span title=
+"Currently set recoil will decay at rest at centre of target.">
+void spontaniously_decay()</span></br>
+
+<span title=
+"Create 2 back to back gun particles with MeV KE.
+No target interaction.">
+void set_gun(Z=6,A=12,MeV=20.0)</span></br>
+
+<span title=
+"Gun particles at target centre with MeV.
+Target will have balanced P.">
+void set_gun(Z,A,MeV,target)</span></br>
+
+void set_beam(Z,A,MeV=0.0,mass=0.0)</br>
+void set_targ(Z,A,mass=0.0)</br>
+void set_targ(target,mass=0.0)</br>
+void set_reco(Z,A,mass=0.0)</br>
+void set_ejec(Z,A,mass=0.0)</br>
+
+<span title=
+"Beam, Target, Recoil, Beam Energy.">
+void set_reaction(Z,A,Z,A,Z,A,MeV)</span></br>
+
+void set_E_beam(MeV)</br>
+
+<span title=
+"Set beam energy to required for given E_cm.
+Calculated for middle of target if set.">
+void set_E_cm_beam(MeV)</span></br>
+
+void set_fusion(compound_mass=0)</br>
+void set_elastic()</br>
+
+<span title=
+"Overide automatic Q from masses.
+Stays set  unless set to 0.">
+void set_Q_manual(MeV)</span></br>
+
+<span title=
+"Set excitation of the recoil nucleus.
+Remember dont use elastic if you want excited beam.">
+void set_E_star(MeV)</span></br>
+
+<span title=
+"Disables thick calculations.
+To disable all target interaction set reset target with basic function.">
+void set_target_interaction_off()</span></br> 
+
+<span title=
+"Set thick target distribution (assumming a real target set)
+0 uniform
+1 KE
+2 KE^2
+3 1/KE^2
+4 KE when over coulomb, exp decay below
+5 Example of E_star resonance (4.5 MeV) only actually works for fusion">
+void set_target_interaction(mode=0)</span></br>
+
+<span title=
+"Set thick target distribution with a formula using a given x variable
+0 -> x=KE_0_tot_CoM
+1 -> x=P_0_CoM
+2 -> x=beta_CoM
+3 -> x=E_star">
+void set_target_interaction(TFormula,variable=0)</span></br>
+
+</p>
+Distributions</br>
+<p class="code">
+
+<span title=
+"Set primary reaction uniform in CoM over angle range.
+Returns fraction of 4pi covered, for normalising results.">
+double set_uniform(theta_min=0,theta_max=pi)</span></br>
+
+<span title=
+"Set primary reaction in CoM to Gaussian centered around 0 with sigma">
+void set_zeroid(sigma=0.1)</span></br>
+
+<span title=
+"Sets beam+target rutherford over given CoM angles.
+Returns the cross section in mbar for beam into that coverage. (weighted over target if thick target).">
+double set_rutherford(theta_min=0.1,theta_max=pi)</span></br>
+
+<span title=
+"Sets beam+target rutherford over given lab angles.
+Returns the cross section in mbar for EITHER particle into that coverage. (weighted over target if thick target).">
+double set_rutherford_lab(theta_min=0.1,theta_max=pi)</span></br>
+
+<span title=
+"Load x y data from a file specifying a CoM distribution.">
+void set_primary_dist(file_name)</span></br>
+
+<span title=
+"Set CoM distribution with a TGraph">
+void set_primary_dist(TGraph*)</span></br>
+
+<span title=
+"Set CoM distribution with a TFormula">
+void set_primary_dist(TFormula*)</span></br>
+
+<span title=
+"Set CoM distribution with a TF1">
+void set_primary_dist(TF1*)</span></br>
+
+<span title=
+"Create a lab angle mask after setting a manual CoM distribution.
+Calculates CoM angles from kinematics of current particle+target setup.">
+void mask_manual(thetamin_lab,thetamax_lab,recoil=true,ejectile=true)</span></br>
+
+<span title=
+"Sets a rutherford type distribtion over the specificed lab angles.
+Calculates CoM angles from kinematics of current particle+target setup.">
+void set_ruthmask(double,double,bool=true,bool=true)</span></br>
+
+<span title=
+"Switiches the CoM angle of recoil and ejectile.
+Initially distribtions specify ejectile direction.">
+void reverse_primary_dist()</span></br>
+
+</p>
+Decay</br>
+<p class="code">
+
+<span title=
+"Set gamma decay.
+Overwrites E_star if it is insufficient.">
+void set_gamma(keV=E_star)</span></br>
+
+<span title=
+"Sets a beta decay (with roughly proper distribution).
+End point TKE set based on masses, assuming going to ground.
+If setting TKE AND E_final mass will be automatically overwritten to get the right Q">
+void set_b_ray(beta_plus=false,TKE=auto,E_final=auto)</span></br>
+
+<span title=
+"Set Internal Conversion Electrons.
+Overwrites E_star if it is insufficient.">
+void set_ICE(transition_keV=E_star)</span></br>
+
+<span title=
+"Sets an alpha decay.
+End point TKE set based on masses, assuming going to ground.
+If setting TKE AND E_final mass will be automatically overwritten to get the right Q">
+void set_alpha(TKE=auto,E_final=auto)</span></br>
+
+<span title=
+"Does stuff">
+void set_fission(mass_ratio_in=0.1,delta_m=0,double delta_TKE=0.0,TKECentral=false)</span></br>
+
+void decay_off()</br>
+
+<span title=
+"Sets a lifetime rather than prompt decay.
+This does a slow calculation for each event thought.
+Advisable to manually set densities.
+Set 0 turns it off.">
+void set_lifetime_ns(ns=0.0,target_mg/cm2=0.0,backing_mg/cm2=0.0)</span></br>
+
+<span title=
+"Sets a lifetime rather than prompt decay.
+This does a slow calculation for each event thought.
+Advisable to manually set densities.
+Set 0 turns it off.">
+void set_halflife_ns(ns=0.0,target_mg/cm2=0.0,backing_mg/cm2=0.0)</span></br>
+
+<span title=
+"Creates a vacuum seperation between foil and stopper.
+Only has an effect if decay has a lifetime.">
+void set_stopper_seperation(mm)</span></br>
+
+
+</p>
+
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<TITLE>Jaent help detectors</TITLE>
+	<link rel="stylesheet" Type="text/css" href="basic.css">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+
+
+<H1 NAME="Top">Detectors and Geometry</H1>
+
+<HR>
+<A HREF="../help.html">Index</A></br>
+<A HREF="#offset">Interaction Offset</A></br>
+<A HREF="#create">Adding a Detectors</A></br>
+<A HREF="#interact">Setting Particle Interactions</A></br>
+<A HREF="#preset">Preset Experiment Elements</A></br>
+<HR>
+<A HREF="#CommandList">Command List</A>
+<HR>
+	The default location of the primary reaction is at point (0,0,0).</br>
+	The beam direction is defined by the vector [0,0,1].</br>
+	All objects, even those that are inert, are defined as detectors.</br>
+<HR>
+<H2><A NAME="offset" HREF="#Top">Interaction Offset</A> </H2>
+
+<HR>	
+	In order to investigate effects from sources or target position changes this can be offset:
+	<p class="code">
+		void set_target_primary_offset(TVector3 offset=TVector3(0.0,0.0,0.0))</br>
+	</p>
+	<small>
+		This has a small computational cost so for simple geometries it may be best to move the experiment elements.</br>
+	</small>
+<HR>	
+<H2><A NAME="create" HREF="#Top">Adding a Detectors</A> </H2>
+<HR>	
+	This program is limited to 2 dimensional detectors.</br>
+	Each detector is defined by a series of points that describe it's outline.</br>
+	The coordinate system for the points is cartesian centred around the detector anchor point (0,0).</br>
+	</br>
+	Detectors are placed in the experiment with the a TVector3 describing the placement of the anchor point</br>
+	and a TRotation which describes the rotation of the detector about the anchor point, initial normal vector defined as [0,0,1].</br>
+	</br>
+	To add a detector that has volume, one detector must be added for each face of the object.</br>
+	Detectors can be entered from either side, false backs can be added to prevent this.</br>
+<HR>	
+	To create a detector, define two vector arrays that contain the x and y coordinates of the points that describe the detector face.</br>
+	<p class="code">
+		void add_detector(vector<double> x, vector<double> y, TVector3 anchor_position, TRotation anchor_rotation=TRotation())</br>
+	</p>
+	<small>
+		By default, detectors are obtuse to all kinds of particle.</br>
+	</small></br>
+	
+	Detector particle sensitivity can be set at creation time with:</br>
+	<p class="code">
+		void add_detector(x, y, TVector3, TRotation, bool p0=false, bool p1=false, bool p2=false, bool p3=false)</br>
+	</p>
+	<small>
+		<i>p0</i> = sensitivity to recoil particle.</br>
+		<i>p1</i> = sensitivity to ejectile particle.</br>
+		<i>p2</i> = sensitivity to decay daughter.</br>
+		<i>p3</i> = sensitivity to decay ejecta.</br>
+	</small></br>	
+	One may also create a <i>detector</i> class object directly and add this.</br>
+	<p class="code">
+		detector det(vector<double> x, vector<double> y, TVector3 anchor_position,TRotation anchor_rotation=TRotation())</br>
+		void add_detector(detector det, bool p0=false, bool p1=false, bool p2=false, bool p3=false)</br>
+	</p>
+<HR>	
+<H2><A NAME="interact" HREF="#Top">Setting Particle Interactions</A> </H2>
+<HR>	
+	By default detectors are insensitive to all particles.</br>
+	This means that they will not record the details of an interaction with a particle</br>
+	and any particle that attempts to pass will be stopped in <b>obstruction mode</b> (except gammas).</br>	
+	Note: This does not count as a hit.</br>	
+<HR>	
+	Detector sensitivity to can be set in multiple ways:</br>
+	<p class="code">
+		void set_valid_dets(int particle,int det#)</br>
+		void set_valid_part(int det#, bool p0=true, bool p1=true, bool p2=true, bool p3=true)</br>
+	</p>
+	<small>
+		<i>det#</i> is defined by the order added starting from 0.</br>
+	</small>	
+<HR>	
+	In <b>obstruction mode</b>, a particle (except gammas) will stop in the first valid detector it arrives at.</br>
+	To pass through (and be recorded as a hit in) multiple detectors (such as a dE-E or silicon stack),</br>
+	detectors must be paired.</br>
+	<p class="code">
+		void set_pair(int det#,int det#)</br>
+	</p>
+	<small>
+		To record a hit in all 3 of a stack of detectors 0,1,2,</br>
+		pairs must be made of (0,1) (1,2) and (0,2).</br>
+		Neglecting the pairing of (0,2) would result in all tracks stopping with detector 1.</br>
+	</small></br>	
+	<b>NOTE: Particle (except gammas) CANNOT continue in <i>free space</i> after a detector hit. They stop at the last valid detector.</b></br>
+	<small>
+		A work around for this is to create an experiment box from "detectors" and pair them.</br>
+		However, if a particle would meet an obstruction after a valid hit, it has stopped at the valid hit,</br>
+		it does NOT carry on to paired detectors further on.</br>
+	</small>
+<HR>	
+	For decay events with long lifetimes, implantation is possible.</br>
+	If a parent recoil reaches a path termination (obstruction or hit) it is implanted.</br>
+	Deceleration is assumed instant.</br>
+	By default daughter and ejecta leave the implant detector and are not recorded in it.</br>
+	This behaviour can be changed.</br>
+	<p class="code">
+		void set_implant_escape(int setting=-1)</br>
+	</p>	
+	<small>
+		1 = Default behaviour.</br>
+		0 = Ignore implantation, emitted as if recoil continued in free space.</br>
+		-1 = Detected (if valid) in implantation detector,</br>
+		with this setting in <b>obstruction mode</b> mode, ejecta ONLY leave to hit another, paired, detectors (excluding gammas).</br>
+	</small></br>
+	
+	If not using <b>obstruction mode</b>, implantation will record as furthest detector if recoil has any hits.
+<HR>	
+<H2><A NAME="preset" HREF="#Top">Preset Experiment Elements</A> </H2>
+<HR>	
+
+As well as defining detectors manually there are some predefined functions to add certain detectors.</br>
+These are not functions OF the exp_core class but act ON the class.</br>
+	<p class="code">
+		void add_rutherford_monitor(exp_core& experiment, double x=-36, double y=176.363, double radius=1.2)</br>
+		void add_annulus(exp_core& experiment,double Z=20, double inner_radius=10, double outer_radius=50)</br>
+		void add_S3(exp_core& experiment,double Z)</br>
+	</p>
+	<small>
+		Rutherford monitor is a circular detector in the xy place facing point (0,0,0)</br>
+		Annulus detectors are defined here centred along the beam axis.</br>
+	</small>	
+<HR>	
+	As well as detectors common obstructions can be added.</br>
+	<p class="code">
+		void add_target_ladder(exp_core& experiment,double width=15,double height=100,double target_radius=5)</br>
+	</p>
+	<small>
+		Target ladder is most necessary in decay + lifetime calculations.</br>
+		If a "real" target is defined before adding target ladder, ladder will follow any rotation of target.</br>
+	</small>
+
+<!--
+<HR>	
+	</br>
+	<p class="code">
+		</br>
+	</p>
+	<small>
+		</br>
+	</small>
+-->	
+
+</br></br>		
+<HR>	
+<HR>	
+<HR>	
+<HR>		
+<HR>	
+<HR>
+<HR>
+<HR>
+<H2><A NAME="CommandList" HREF="#Top">Command List</A> </H2>
+<p class="code">
+
+void add_detector(pointsxy,position(0.0,0.0,1.0),rotation=0,recoil=false,ejctile=false,daughter=false,decay=false)</br>
+void add_detector(pointsx,pointsy,position(0.0,0.0,1.0),rotation=0,recoil=false,ejctile=false,daughter=false,decay=false)</br>
+void add_detector(detector,recoil=false,ejctile=false,daughter=false,decay=false)</br>
+
+<span title=
+"Wipe all detector information including current graphical views.">
+void reset_detectors()</span></br>
+</br>
+
+void set_valid_dets(particleNo,detNo)</br>
+void set_valid_part(detNo,recoil=false,ejctile=false,daughter=false,decay=false)</br>
+void reset_valid_dets()</br>
+
+<span title=
+"Set two detectors to be paired,
+This means all allowed particles can pass through one and hit the other.">
+void set_pair(detNo,detNo,pair=true)</span></br>
+void reset_doubles()</br>
+<span title=
+"0=no implants
+1(initial)= decay not recorded in implant
+-1=recorded but needs detector pairing">
+void set_implant_escape(mode=-1)</span></br>
+</br>
+
+void set_target_primary_offset(TVector3)
+void set_target_primary_offset(x,y,z)
+
+</p>
+
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>						
+					
+
+</BODY>
+</HTML>

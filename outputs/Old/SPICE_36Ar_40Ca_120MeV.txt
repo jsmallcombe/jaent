@@ -1,0 +1,45 @@
+
+36Ar beam rutherford scattering on 40Ca target nuclei.
+Accurate up to CM scattering angle 2.94327 
+
+      Recoil (mb) Ejectile (mb) Recoil (Hz/pnA) Ejectile (Hz/pnA)
+  0       9260.74       421.945          870214           39649.4
+  1             0             0               0                 0
+  2       640.216       5060.04         60159.9            475482
+
+
+ Target 40Ca
+ Thickness 1000 ug/cm2. Density 1.55 g/cm3. Thickness 6.45161 um
+
+
+  40Ca(36Ar,6Be)70Se* -> 6Be + 70Se + e-
+Q = -21.523 MeV  E* = 1.4 MeV  KE_CoM_min = 22.923 MeV  Coul_barrier = 59.3226 MeV
+
+     E_Beam_min = 51.0099 MeV
+ E_Beam_barrier = 119.2 MeV
+         E_beam = 120 MeV  Beta = 0.0389747  E_CoM = 59.7514 MeV
+ Lifetime = 4.32809 ps
+
+ Target 40Ca
+ Thickness 1000 ug/cm2. Density 1.55 g/cm3. Thickness 6.45161 um
+
+
+   1.4__________
+                |
+                | 0.2 e-
+   1.2__________|
+
+
+     0__ 70Se___
+
+
+Total Reaction Events 100000
+Decays in target 9164 (0.09164) 
+Decays after implant 0 (0) 
+Decays in vacuum 90836 (0.90836) 
+
+Multiply by fraction 0.682944
+
+Total Reaction Events 100000
+Ejectile 32251 (0.32251) 
+Full Events 0 (0) 

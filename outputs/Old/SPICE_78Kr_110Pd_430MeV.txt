@@ -1,0 +1,77 @@
+
+78Kr beam rutherford scattering on 110Pd target nuclei.
+Accurate up to CM scattering angle 1.60606 
+
+      Recoil (mb) Ejectile (mb) Recoil (Hz/pnA) Ejectile (Hz/pnA)
+  0       19270.8       782.631     1.05358e+06           42788.3
+  1             0             0               0                 0
+  2        191.14       154.402         10450.1           8441.54
+  3        16.877       1348.84         922.708           73744.5
+  4       18.0303       1047.25         985.758           57255.8
+  5       19.5414       827.743         1068.38           45254.7
+  6       20.2413       678.097         1106.64           37073.2
+  7       21.5536       544.982         1178.39           29795.4
+  8       23.0568       447.693         1260.57           24476.4
+  9       23.9317       384.875          1308.4             21042
+ 10       25.7371       311.813         1407.11           17047.6
+ 11       27.1926       277.288         1486.68             15160
+ 12       28.4094       240.215         1553.21           13133.1
+ 13       30.9147       203.642         1690.18           11133.6
+ 14        31.376       178.519          1715.4           9760.07
+ 15       33.0781       156.869         1808.46           8576.42
+ 16       34.3108       140.305         1875.85           7670.79
+ 17       35.6152       122.162         1947.17           6678.91
+ 18       37.2615       111.858         2037.18           6115.53
+ 19       38.1841       98.5993         2087.62           5390.66
+ 20       40.0691       89.1841         2190.67           4875.91
+ 21       41.7154       81.0612         2280.68           4431.81
+ 22       43.2902       72.6362         2366.78           3971.19
+ 23       45.1672       64.3622          2469.4           3518.84
+ 24       45.8909       60.0826         2508.97           3284.86
+ 25       47.6486       56.0044         2605.06           3061.89
+ 26       48.8301       49.3416         2669.66           2697.62
+
+
+78Kr beam rutherford scattering on 110Pd target nuclei.
+Accurate up to CM scattering angle 1.60606 
+
+      Recoil (mb) Ejectile (mb) Recoil (Hz/pnA) Ejectile (Hz/pnA)
+  0       19310.1       784.054     1.05573e+06           42866.1
+  1             0             0               0                 0
+  2       820.077       8013.05         44835.5            438093
+
+
+ Target 110Pd
+ Thickness 1600 ug/cm2. Density 12.4275 g/cm3. Thickness 1.28747 um
+
+
+  110Pd(78Kr,110Pd)78Kr* -> 110Pd + 78Kr + e-
+Q = 0 MeV  E* = 1.017 MeV  KE_CoM_min = 1.017 MeV  Coul_barrier = 202.37 MeV
+
+     E_Beam_min = 5.32606 MeV
+ E_Beam_barrier = 362.304 MeV
+         E_beam = 430 MeV  Beta = 0.0442887  E_CoM = 242.312 MeV
+ Lifetime = 15.5811 ps
+
+ Target 110Pd
+ Thickness 1600 ug/cm2. Density 12.4275 g/cm3. Thickness 1.28747 um
+
+
+ 1.017__________
+                |
+                | 1.017 e-
+     0__ 78Kr___|
+
+
+Total Reaction Events 100000
+Decays in target 1670 (0.0167) 
+Decays after implant 0 (0) 
+Decays in vacuum 98330 (0.9833) 
+
+Multiply by fraction 0.992456
+
+Total Reaction Events 100000
+Recoil 72016 (0.72016) 
+Ejectile 10886 (0.10886) 
+Decay A 72041 (0.72041) 
+Full Events 0 (0) 

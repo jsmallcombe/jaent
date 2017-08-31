@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<TITLE>Jaent help outputs</TITLE>
+	<link rel="stylesheet" Type="text/css" href="basic.css">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+
+
+<H1 NAME="Top">Outputs</H1>
+
+<HR>
+<A HREF="../help.html">Index</A></br>
+<A HREF="#CommandList">Command List</A>
+<HR>		
+
+	void auto_rutherford(int=10000,bool=false);</br>
+	This function automatically scans all of 4 pi for the given setup and returns Rutherford scattering for every detector</br>
+	Inputs are reps per theta segment and obstruction_mode</br>
+	This will automatically set the primary distribution and change all detector validities.</br>
+	Output is printed to terminal</br>
+	</br>
+	void auto_rutherford_OTT(int=10000,bool=false);</br>
+	Same as above accept this also calculates scattering on target backings and stoppers/catchers</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	Public member variables of the experiment class which can be drawn:</br>
+	</br>
+	TH1D dist_target_hist - the currently set target interaction depth probability distribution.</br>
+	TGraph dist_target_KE_0 - the currently set beam target CoM KE as a function of target depth.</br>
+	TGraph dist_target_beta - the currently set CoM beta as a function of target depth.</br>
+	TGraph dist_target_P_0 - the currently set beam target CoM momenta as a function of target depth.</br>
+	TGraph dist_target_E_star - the currently set recoil excitation as a function of target depth. (really only valid for fusion)</br>
+	TGraph dist_target_KE_1 - the currently set recoil ejectile CoM KE  as a function of target depth.</br>
+	TGraph dist_target_P_1 - the currently set recoil ejectile CoM momenta as a function of target depth.</br>
+	All are given as a function of the target layer thickness 0-1</br>
+	These are only active/functional if exp_core::set_target_interaction() has been called</br>
+	and are overwritten every time the "PRIMARY REACTION" is adjusted.</br>
+	</br>
+	TH1D beta_dist_hist - The current energy distribution set for emitted beta particles</br>
+	</br>
+	vector< vector< TGraph* > > E_PAIN - A whole set of energy loss tables for particles in target and backing</br>
+	These are a smoother implementation of the range library, good for small steps.</br>
+	At the moment these are only used for lifetime-target stuff.
+	I cant remember my perfectly good reason for not using them elsewhere.</br>
+	</br>
+	</br>
+	Print Commands</br>
+	Print various info to terminal. Useful to check input.</br>
+	</br>
+	void print_reaction() - print info on kinematics etc of beam+target primary reaction.</br>
+	void print_detectables() - print which detectors accept which particles.</br>
+	void print_doubles() - print which detectors are paired as a matrix.</br>
+	void print_target() - print details of target and backing thickness (check the density).</br>
+	void print_decay() - print the recoil excitation and decay info as an ascii diagram.</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	Basic Get Functions to return numbers from current settings:</br>	
+	int get_TZ()</br>
+	int get_TA()</br>
+	int get_BZ()</br>
+	int get_BA()</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	Basic even simm checks:</br>
+	</br>
+	void basic_decay_check(int reps);</br>
+	Prints to terminal where in experiment recoil is when it decays</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	void draw_primary_kinematics()</br>
+	Draws a 4 panel view of lab-CM kinematics for the primary reaction</br>
+	</br>
+	void draw_decay_Z(int mult=0,bool obstructions=false,double zoom=0)</br>
+	Draws the Z position of decay for recoiling in flight decay</br>
+	Can specify multiplicity of hit for detector gating</br>
+	</br>
+	void draw_target_interaction(int mult=0,bool obstructions=false);//best already be pointing to a pad</br>
+	Draw the target interaction position and the position of any decays in target/backing</br>
+	Can specify multiplicity of hit for detector gating</br>
+	</br>
+	</br>
+	draw_hit_pattern_2D(int proj,int reps,bool obstructions,bool recoil,bool ejectile,bool decayA,bool decayB)</br>
+	Simulates rebs number of events and make a 2D projection of accepted hits.</br>
+	There is no multiplicity gate, just selection of which particles to include.</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>	
+	TH1D theta_cover_auto(bool=false);//best already be pointing to a pad</br>
+	Produces a theta coverage histogram for ejectile in the LAB FRAME with or without obstruction.</br>
+	Set individual detector sensitivities to investigate them individually</br>
+	Wipes experimental parameters.</br>
+	</br>
+	TH1D theta_hist(int reps,bool obstructions,bool recoil,bool eject,bool decayA,bool decayB){</br>
+	Produces a histogram of "beam_like" (ejectile unless reversed) theta CM FRAME, for the specified hit events.</br>
+	There is no multiplicity gate, just selection of which particles to include. Turn all off to skip hit check.</br>
+	Uses current experimental distribution settings.</br>
+	</br>
+	</br>
+	void basic_hit_count(int reps,bool obstructions=false,int recoil=0,int eject=0,int decayA=0,int decayB=0);</br>
+	This one is the bread and butter basic event simulator</br>
+	Generates rep number of events and checks for hits.</br>
+	Outputs to terminal the fraction of events for which each particle has a valid hit.</br>
+	Additionally one may specify the minimum multiplicity for each kind of particle in a "valid" event.</br>
+	For every event in which all multiplicities are met the Full Event counter is incremented AND</br>
+	Details of the hits are added to the detectors</br>
+	</br>
+	</br>
+	void basic_make_single(bool obstructions=false,int recoil=0,int eject=0,int decayA=0,int decayB=0);</br>
+	This one is the bread and butter basic event simulator</br>
+	Generates a single event with the requested hit requirements.</br>	
+	</br>
+	</br>
+	basic_det_hit_frac(int reps,int det,bool obstructions)</br>
+	For reps, calculate the fraction of events that give a valid hit in specified detector</br>
+	</br>
+	</br>
+		</br>
+	auto_E_theta(int reps,bool obstructions,bool multiR,bool multiE,bool multiA,bool multiB)</br>
+	Sums energy and theta of all activated particle hits, summed over all detectors</br>
+		</br>
+		</br>
+		
+		</br>
+		</br>
+		This is an extremely useful drawing tool for checking your events are right before doing large calculations.</br>
+		Start by setting detector sensitivities for the events you want.</br>
+		Will draw an event for every time detection multiplicity >= specified.</br>
+		display_time is the time in seconds between events.</br>
+		refresh_rate is the number of events to show before clearing the screen</br>
+		counterpart_misses allows to only show the particle tracks of those "detected"</br>
+		</br>
+		void draw_hits_3D(projection=0,multiplicity=1,obstructions=true,display_time=0.75,refresh_rate=1,counterpart_misses=true,run_time=120)</br>
+		</br>
+		</br>	
+	</br>
+	</br>	
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+
+
+	//
+	//	Drawing
+	//
+	//Should be pointing to a pad when these are called as they just draw
+	void draw_exp();//Draw detectors 3D and arrow</br>
+	void draw_xz_labels();//Draw detectors 2D and arrow AND detector numbers</br>
+	void draw_phi(bool=false);//Draw phi and theta view (important check if using angluar or near y=-ve)</br>
+	void draw_boost_detectors(bool=true);//Draw 3D detectors as seen by recoil (if "true", else ejectile)</br>
+	</br>
+	//Returns a TH2D of RAW fission fragment settings (mass and TKE)</br>
+	TH2D* fission_fragment_dist();</br>
+	//Returns a TH2D of DETECTED fission fragment pairs (mass and TKE)</br>
+	TH2D* fission_fragment_dist_detect(bool obstructions);</br>
+	//Returns a TH2D of RAW fission fragment pairs (dtheta dphi)</br>
+	TH2D* fission_fragment_angles();</br>
+	//Returns a TH2D of DETECTED fission fragment pairs (dtheta dphi)</br>
+	TH2D* fission_fragment_angles_detect(bool obstructions);</br>
+	//Returns a TH3D of DETECTED fission fragment pairs and transfer particle (dtheta dphi, thetatransfer)</br>
+	TH2D* fission_fragment_transfer_angles(bool obstructions);</br>
+	</br>	
+	</br>
+	</br>
+
+
+	</br>
+
+	double basic_det_hit_multi(int,int,bool=false);</br>
+	</br>
+	
+	
+	
+	
+	
+
+<!--
+<HR>	
+	</br>
+	<p class="code">
+		</br>
+	</p>
+	<small>
+		</br>
+	</small>
+-->	
+
+// 
+
+
+</br></br>		
+<HR>	
+<HR>	
+<HR>	
+<HR>		
+<HR>	
+<HR>
+<HR>
+<HR>
+<H2><A NAME="CommandList" HREF="#Top">Command List</A> </H2>
+
+<p class="code">
+
+
+
+public:
+	vector< string > part_names;</br>
+	vector< string > projection_names;</br>
+	
+
+	
+
+	int detN(){return detectors.size();}</br>
+	//intentionally a copy rather than a pointer because detectors are sacred</br>
+	detector get_det(int in=0){if(in<this->detN())return detectors[in]; else return detector();}</br>
+
+	//get current physical parameters</br>
+	double get_reco_E_star();</br>
+	double get_E_beam_min();</br>
+	double get_basic_barrier_in();</br>
+	double get_E_beam_barrier();</br>
+	double get_beta_CoM();</br>
+	double get_E_beam();</br>
+	double get_E_beam_targ();</br>
+	double get_KE_0_tot_CoM();</br>
+	double get_KE_1_tot_CoM();</br>
+	
+	//Useful little access function if doing a manual loop externally</br>
+	TLorentzVector GetLor(int i)</br>
+
+
+public:
+	double basic_det_hit_frac(int,int,bool=false);</br>
+	double basic_det_hit_multi(int,int,bool=false);</br>
+
+public:	</br>
+	void auto_rutherford(int=10000,bool=false);</br>
+	void auto_rutherford_OTT(int=10000,bool=false);//do backing aswell</br>
+</br>
+
+public:
+	TH2D* fission_fragment_dist();
+	TH2D* fission_fragment_dist_detect(bool=false);
+	TH2D* fission_fragment_angles(int=500000);
+	TH2D* fission_fragment_angles_detect(bool=false,int=500000);
+	TH3D* fission_fragment_transfer_angles(bool=false);
+	TH1D* fission_fragment_dT(int detA,int detB,bool=false);
+
+public:
+	//drawing</br>
+	void draw_exp(int=0);//best already be pointing to a pad</br>
+	void draw_phi(bool=false);//best already be pointing to a pad</br>
+	void draw_xz_labels();//best already be pointing to a pad</br>
+	void draw_boost_detectors(bool=true);//best already be pointing to a pad</br>
+	</br>
+
+	void draw_hits_3D(int=4,int=1,bool=true,double=0.75,int=1,bool=true,double=120);</br>
+
+
+
+
+
+
+</p>
+
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>		
+</br></br>		
+
+	
+					
+					
+		
+
+
+</BODY>
+</HTML>
