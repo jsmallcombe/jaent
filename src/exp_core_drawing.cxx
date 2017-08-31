@@ -101,7 +101,7 @@ void exp_core::draw_boost_detectors(bool recoil){if(gPad){
 }}
 
 
-void exp_core::draw_target_interaction(int mult,bool obstructions){if(gPad){
+void exp_core::draw_target_interaction(int mult,bool obstructions,int reps){if(gPad){
 	gPad->cd();	
 	
 	TH1D interaction("interaction","interaction",302,-1.01,2.02);
@@ -109,7 +109,7 @@ void exp_core::draw_target_interaction(int mult,bool obstructions){if(gPad){
 	recoil_decay.SetLineColor(2);
 	interaction.GetXaxis()->SetTitle("Target Fraction");
 	
-	for(int i=0;i<50000000;i++){	
+	for(int i=0;i<reps;i++){	
 		this->gen_event();
 		if((mult>0&&mult<5)||(obstructions&&mult==0)){
 			this->det_check_hits_all(obstructions);
@@ -139,7 +139,7 @@ void exp_core::draw_decay_Z(int mult,bool obstructions,double zoom){if(gPad&&dec
 	decay_Z.SetLineColor(2);
 	decay_Z.GetXaxis()->SetTitle("World Z [mm]");
 	
-	for(int i=0;i<50000000;i++){	
+	for(int i=0;i<10000000;i++){	
 		this->gen_event();
 		if((mult>0&&mult<5)||(obstructions&&mult==0)){
 			this->det_check_hits_all(obstructions);

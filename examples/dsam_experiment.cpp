@@ -73,7 +73,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	// setup the required thick target interaction goes roughly as E^2
 	experiment.set_target_interaction(2);
 	experiment.set_gamma(1564);
-	//experiment.set_lifetime_ns(0.000426,2.25,19.32);//includes densities
+	experiment.set_lifetime_ns(0.000426,2.25,19.32);//includes densities
 	
 	cout<<endl;
 	experiment.print_target();
@@ -118,11 +118,9 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	// Next we spend 20 seconds drawing events so that if something is very wrong it can be corrected
 	//because this simple geometry has no obstructions we can run "Obstructions false" mode which is faster
 	can_view->cd(2);
-// 	experiment.draw_hits_3D(2,2,false,0.5,1,true,20);
+	experiment.draw_hits_3D(2,2,false,0.5,1,true,20);
 // draw_hits_3D(projection,hit_multiplicity,obstructions,display_time,refresh_rate,draw_misses,run_time)
-experiment.dist_target_KE_beam.Draw();
-	app->Run();
-	return 0;
+
 	
 	// Draw the target and decay things
 	// quite important to check things are set and working right
@@ -132,8 +130,9 @@ experiment.dist_target_KE_beam.Draw();
 	
 	can_view->cd(1);
 	gPad->cd(4);
-// 	experiment.draw_target_interaction(1,false);
-	experiment.draw_target_interaction();
+	experiment.draw_target_interaction(0,false,500000);
+// 	experiment.draw_target_interaction();
+
 	
 	// Next we simulate some events which will be recorded as good and saved to detector
 	// only for a ejectile and gamma hit i.e. S3 germanium hit

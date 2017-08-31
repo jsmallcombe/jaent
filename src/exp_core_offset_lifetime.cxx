@@ -72,11 +72,16 @@ double exp_core::lifetime_track(int i,double& ns,double& fraction_in){
 	//Returns velocity either and the moment the clock runs out OR at point of leaving target
 	//Updates fraction_in	
 	
+	bool outputtest=false;
+	if(outputtest)cout<<endl<<endl<<"Starting new track";
+	
 	//calculate initial parameters
 	double KE_0=get_KE(lor_point[i]);	//KE in lab frame at point of interaction (fraction_in==current_target_fraction for this event initially)
 	double beta_0=lor_point[i]->Beta();	//beta of parent nucleus
 	double mass= *part_M[i];		//mass of parent nucleus in amu
 	TVector3 traj=lor_point[i]->Vect();	//momentum vector lab frame
+	
+	if(outputtest)cout<<endl<<"Starting at pos "<<fraction_in<<" "<<KE_0<<" MeV";
 	
 	double sep=0;//place holder for a stopper separation, in mm whereas targets in um
 
@@ -92,6 +97,7 @@ double exp_core::lifetime_track(int i,double& ns,double& fraction_in){
 	if(b_start^backingward)two_layer=true;// If two layers will be traversed in this trajectory and starting position
 
 	if(stopper_seperation>0){ //If there is a stopper gap (stopper concept quite limited)
+		if(outputtest)cout<<endl<<" Stopper foil at "<<stopper_seperation;
 		sep=stopper_seperation*eff_thick;// Length of path between stoppers
 		
 		// Set the offset (relative to target position) of the particle if it exits through the stopper
@@ -122,6 +128,11 @@ double exp_core::lifetime_track(int i,double& ns,double& fraction_in){
 	if(beamward)frac1=1-frac1;//only needed for frac1 as frac2 is always 1!
 	um1*=frac1;//only needed for frac1 as frac2 is always 1!
 
+	
+	if(outputtest)cout<<endl<<"First layer "<<um1<<" um "<<thick1*frac1<<" mg/cm2";
+	if(outputtest)cout<<endl<<"Second layer "<<um2<<" um "<<thick2<<" mg/cm2";
+	
+	
 	////////////////////////////////////////// 
 	///////// start actual calculations  /////		
 	//////////////////////////////////////////	
@@ -140,6 +151,12 @@ double exp_core::lifetime_track(int i,double& ns,double& fraction_in){
 	}else{KE_exit=KE_betw;}//Energy on exit
 	if(KE_exit>0) beta_exit=get_beta_KE(KE_exit,mass);//If it exits, what beta
 
+	
+	if(outputtest)cout<<endl<<"Range in first layer "<<ran1*thick1<<" mg/cm2";
+	if(outputtest)cout<<endl<<"Range in second layer "<<ran2*thick2<<" mg/cm2";
+	if(outputtest)cout<<endl<<"KE "<<KE_0<<" -> "<<KE_betw<<" -> "<<KE_exit<<" eV";
+	
+	
 	//The above is only concerned with energy so a vacuum gap between the two in the case of a stopper is of negligible difference
 
 	double x_0=0;//Total distance to stop (or exit) along current trajectory, in um

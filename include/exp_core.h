@@ -442,7 +442,7 @@ public:
 	void draw_phi(bool=false);//best already be pointing to a pad
 	void draw_xz_labels();//best already be pointing to a pad
 	void draw_boost_detectors(bool=true);//best already be pointing to a pad
-	void draw_target_interaction(int=0,bool=false);//best already be pointing to a pad
+	void draw_target_interaction(int mult=0,bool obstruc=false,int reps=10000000);//best already be pointing to a pad
 	void draw_decay_Z(int=0,bool=false,double=0);//best already be pointing to a pad
 	
 	
