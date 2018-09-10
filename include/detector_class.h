@@ -53,7 +53,7 @@ class detector
 	//////////////////////////////////////////////
 	    
 	TH1D energy,energyG,mass;
-	TH2D hit_pat;
+	TH2D hit_pat,energtTheta;
 	TPolyLine3D* ddraw3;
 	TGraph*	  ddraw2;
 	string name;

@@ -230,7 +230,7 @@ void exp_core::draw_primary_kinematics(){if(gPad){
 	string es=this->channelnames(ejec_Z,ejec_A);
 	string rs=this->channelnames(reco_Z,reco_A);	
 
-	TGraph ang1,ang2,angang,energy1,energy2,ee,beta1,beta2,anginvang;
+	TGraph ang1,ang2,angang,energy1,energy2,ee,beta1,beta2,beta3,beta4,anginvang;
 	
 	for(int i=0;i<1001;i++){
 		double a=pi*i/1000.0;
@@ -248,6 +248,8 @@ void exp_core::draw_primary_kinematics(){if(gPad){
 
 		beta1.SetPoint(beta1.GetN(),rl.Theta(),get_beta_KE(get_KE(&rl),reco_mass+reco_E_star/jam_phys_amu));
 		beta2.SetPoint(beta2.GetN(),el.Theta(),get_beta_KE(get_KE(&el),ejec_mass));
+		beta3.SetPoint(beta3.GetN(),rl.Theta(),get_beta_KE(get_KE(&el),ejec_mass));
+		beta4.SetPoint(beta4.GetN(),el.Theta(),get_beta_KE(get_KE(&rl),reco_mass+reco_E_star/jam_phys_amu));
 		
 		anginvang.SetPoint(anginvang.GetN(),pi-a,rl.Theta());
 		
@@ -280,12 +282,15 @@ void exp_core::draw_primary_kinematics(){if(gPad){
 	ee.GetXaxis()->SetTitle(("Energy [MeV] "+rs).c_str());ee.GetYaxis()->SetTitle(("Energy [MeV] "+es).c_str());
 	ee.DrawClone("AC");
 	pad->cd(5);pad->Update();//need because using drawclone
-	beta1.SetMaximum(0.2);	energy1.SetMinimum(0);energy1.GetXaxis()->SetLimits(0,pi);
-	beta1.GetXaxis()->SetTitle("Lab Angle"); beta1.GetYaxis()->SetTitle("Beta [c]");
-	beta1.SetTitle((rs+" red. "+es+" blue.").c_str());
+	beta4.SetMaximum(0.2);	beta4.SetMinimum(0);beta4.GetXaxis()->SetLimits(0,pi);
+	beta4.GetXaxis()->SetTitle("Lab Angle"); beta4.GetYaxis()->SetTitle("Beta [c]");
+	beta4.SetTitle((rs+" red. "+es+" blue.").c_str());
+	beta4.SetLineWidth(1);beta4.SetLineColor(5);beta3.SetLineWidth(1);beta3.SetLineColor(5);
+	beta4.DrawClone("AC");
+	beta3.DrawClone("CSAME");
 	beta1.SetLineWidth(2);beta2.SetLineWidth(2);beta1.SetLineColor(2);beta2.SetLineColor(4);
-	beta1.DrawClone("AC");
 	beta2.DrawClone("CSAME");
+	beta1.DrawClone("CSAME");
 	pad->cd(6);pad->Update();
 	anginvang.SetLineWidth(2);anginvang.SetLineColor(2);
 	anginvang.GetXaxis()->SetTitle(("CM Angle "+es).c_str());anginvang.GetYaxis()->SetTitle("Lab Angle");

@@ -107,6 +107,16 @@ bool exp_core::det_hit_quick(int det,int part){
 	return false;	
 }
 
+// Ignore all particles & offset stuff, just check all detector for a hit
+bool exp_core::all_hit_quick(double theta ,double phi){
+	phi=happy_phi(phi);
+	for(unsigned int det=0;det<detectors.size();det++){
+		if(detectors[det].tp()->IsInside(theta,phi))return true;
+	}
+	return false;
+}
+
+
 /// check all detectors for one particle
 void exp_core::det_check_hits(int part,bool obstruct){
 	if(part>=0&&part<4){

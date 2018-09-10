@@ -42,8 +42,9 @@ void add_PDA(exp_core &,double=28,bool=false);
 
 
 
+void AddGapS3Rings(exp_core &exp,TVector3 pos,TRotation rot,int InnerRing,int OuterRing,int OffSectorStart=-1,int OffSectorEnd=-1);
 
-
+void AddS3BadPix(exp_core &exp,TVector3 pos,TRotation rot,int InnerRing,int OuterRing,vector<vector<int>> BadPix,int SectorOffsetN=0);
 
 
 

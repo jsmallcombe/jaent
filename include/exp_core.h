@@ -269,6 +269,8 @@ private:
 	void det_check_hits(int,bool);
 	void det_check_hits_all(bool);
 	
+	bool all_hit_quick(double theta ,double phi);
+	
 	int current_multiplicity();
 	
 	double max_distance_hit(int);
@@ -499,6 +501,18 @@ private:
 	
 	
 	friend void add_target_ladder(exp_core&,double,double,double);//needs to be friend to fetch target_norm
+	
+	
+////////////////////////////////////////////////////////
+///////////  gosia calculations and loops    ///////////
+////////////////////////////////////////////////////////
+public:
+	void BuildOPINTI(int Nmesh=20,int NIntegrate=60,double thetamax=0);	
+	void ReadDrawMesh(string filename="OPINTI.txt",double Z=32.);
+private:
+	void FindThetaMinMax(double& tMin,double& tMax);
+	void ShapeToPhiList(vector<double>& ThetaList,vector<vector<double>>& PhiList,int NPoints,double TMin,double TMax);
+	
 };
 
 

@@ -40,16 +40,23 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//
 	// Set the target
 	//
-	target tharget(1,2,1.0,180.0,2); //compound 2 polyethelyn
+	target tharget(28,58,1.0); //nickel
+// 	target tharget(78,196,2.0); //nickel
 	experiment.set_targ(tharget);
 
 	
 	//
 	// Set the beam
 	//
-	experiment.set_beam("Sr",90,90*5.2);
-	experiment.set_ejec(1,1);
-	experiment.set_E_star(3);
+	experiment.set_beam("Dy",156,578.4);
+	experiment.set_elastic();
+// // 	experiment.set_ejec(1,1);
+	experiment.set_E_star(5);
+	
+// 	experiment.set_beam("Kr",80,80*4.17);
+// 	experiment.set_elastic();
+// // 	experiment.set_ejec(1,1);
+// 	experiment.set_E_star(1);
 	
 	experiment.print_reaction();
 // 	//
@@ -69,20 +76,19 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	
 	experiment.draw_primary_kinematics();
 
-	TFile outfile("Sr90dp.root","RECREATE");
+	TFile outfile("Dy156.root","RECREATE");
 	can_view->Write("kinematics");
 	
 	
-	add_S3(experiment,30);
-	experiment.set_target_interaction(2);
-	experiment.basic_hit_count(10000000);
-	
-
-	for(int i=0;experiment.detN()>i;i++){
-		stringstream ss;
-		ss<<"S3element"<<i;
-		experiment.get_det(i).energy.Write(ss.str().c_str());
-	}	
+// 	add_S3(experiment,30);
+// 	experiment.set_target_interaction(2);
+// 	experiment.basic_hit_count(100000);
+// 	
+// 	for(int i=0;experiment.detN()>i;i++){
+// 		stringstream ss;
+// 		ss<<"S3element"<<i;
+// 		experiment.get_det(i).energy.Write(ss.str().c_str());
+// 	}	
 	
 	outfile.Close();
 	

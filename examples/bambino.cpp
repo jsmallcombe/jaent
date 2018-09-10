@@ -55,21 +55,27 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//
 	//target tharget(1,2,1000,TVector3(0,0,-1),2,stopper_mg*1000,79,197); //compound 2 polyethelyn	
 // 	expr.set_targ(target(82,208,1.5));
-	expr.set_targ(target(28,58,1.));
+	expr.set_targ(target(28,58,0.98));
+// 	expr.set_targ(target(13,27,1.));
 
 	//
 	// Set the beam
 	//
 	
-	expr.set_beam(68,158);	
+	expr.set_beam(68,158);
+// 	expr.set_beam(54,131);
 	
 	//
 	// Physics
 	//
 	
-	double MeV=safe_coulex_beam(expr.get_BA(),expr.get_BZ(),expr.get_TA(),expr.get_TZ(),TMath::Pi());
+// 	double MeV=safe_coulex_beam(expr.get_BA(),expr.get_BZ(),expr.get_TA(),expr.get_TZ(),TMath::Pi());
+	double MeV=3.9*expr.get_BA();
+// 	double MeV=2.6*expr.get_BA();	
+	
 	expr.set_E_beam(MeV);
 	expr.set_elastic();
+// 	expr.set_E_star(3);
 	
 	expr.set_target_interaction(2);// E^2 target interaction
 	
@@ -145,37 +151,49 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	
 	outfile->cd();
 		TH2F DetE("DetectorsE","DetectorsE",1000,0,MeV,N,0,N);axislab(&DetE,"Energy [MeV]","Detector Number");
+		TH2F ETheta("ETheta","ETheta",1000,0,MeV*800,180,0,pi);axislab(&DetE,"Energy [keV]","Theta");
 	gROOT->cd();
 	
+	cout<<endl<<" Reformatting and combining histograms "<<endl;
 
 	
 	for(int d=0;d<N;d++){
 		detector D=expr.get_det(d);
 		
-		TH1* DE=add_resolution(&D.energy,2,300);//2% resoultion at 300MeV
-
-		
-// 		outfile->cd();
-// 		stringstream ss;
-// 		ss<<"Det"<<d;
-// 			DE->Write(ss.str().c_str());
-// 		gROOT->cd();
-// 		
-// 		
+		TH1* DE=add_resolution(&D.energy,3,300);//3% resoultion at 300MeV
 		for(int b=1;b<=DE->GetNbinsX();b++){
-			
 			double e=DE->GetXaxis()->GetBinCenter(b);
 			double n=DE->GetBinContent(b);
 			if(n>0){
 				DetE.Fill(e,d,n);
 			}
 		}
-		
 		delete DE;
+		
+		
+		TH2* DT=&D.energtTheta;
+		
+		for(int B=1;B<=DT->GetNbinsY();B++){
+			double t=DT->GetYaxis()->GetBinCenter(B);
+			
+			TH1D* proj=DT->ProjectionX("proj",B,B);
+			TH1D* projres = add_resolution(proj,3,300000);
+			delete proj;
+			
+			for(int b=1;b<=projres->GetNbinsX();b++){
+				double e=projres->GetXaxis()->GetBinCenter(b);
+				double n=projres->GetBinContent(b);
+				if(n>0){
+					ETheta.Fill(e,t,n);
+				}
+			}
+			delete projres;
+		}
 	}
 	
 	outfile->cd();
 		DetE.Write();
+		ETheta.Write();
 	gROOT->cd();
 	
 	

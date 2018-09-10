@@ -451,3 +451,139 @@ void add_PDA(exp_core& experiment,double Z_nom,bool PCB){
 		rotb.RotateZ(pi/2);	
 	}
 }
+
+
+
+
+void AddGapS3Rings(exp_core &exp,TVector3 pos,TRotation rot,int InnerRing,int OuterRing,int OffSectorStart,int OffSectorEnd){
+
+	double phiA=-180.0,phiB=180.0;
+	if(OffSectorEnd>=0){
+		phiA=(OffSectorEnd+0.5)*11.25;
+		phiB=(OffSectorStart-0.5)*11.25+360;
+	}
+	vector<double> x,y;
+	for(int i=phiA*10;i<=phiB*10;i++){
+		double ang=i*TMath::Pi()/1800.;
+		x.push_back((11.0+InnerRing)*cos(ang));
+		y.push_back((11.0+InnerRing)*sin(ang));
+	}
+	for(int i=phiB*10;i>=phiA*10;i--){
+		double ang=i*TMath::Pi()/1800.;
+		x.push_back((12.0+OuterRing)*cos(ang));
+		y.push_back((12.0+OuterRing)*sin(ang));
+	}	
+	
+	exp.add_detector(x,y,pos,rot,true,true);
+}
+
+
+void AddS3BadPix(exp_core &exp,TVector3 pos,TRotation rot,int InnerRing,int OuterRing,vector<vector<int>> BadPix,int SectorOffsetN){
+	
+	vector<vector<bool>> OnPix(24,vector<bool>(32,true));
+	
+	for(int r=0;r<InnerRing;r++){
+		for(int s=0;s<32;s++){
+			OnPix[r][s]=false;
+		}
+	}
+	
+	for(int r=OuterRing+1;r<24;r++){
+		for(int s=0;s<32;s++){
+			OnPix[r][s]=false;
+		}
+	}
+	
+	for(unsigned int i=0;i<BadPix.size();i++){
+			int s=BadPix[i][1]+SectorOffsetN;
+			if(s>=32)s-=32;
+			if(s<0)s+=32;
+			cout<<endl<<BadPix[i][0]<<" "<<s;
+		OnPix[BadPix[i][0]][s]=false;
+	}
+	
+	for(unsigned int r=23;r>=0;r--){
+		cout<<endl;
+		for(unsigned int s=0;s<32;s++){
+			cout<<OnPix[r][s];
+		}
+	}	
+	
+	bool started=false;
+	vector<double> x,y;
+	int s=0;
+	for(s=0;s<32;s++){
+		
+		bool good=false;
+		for(int r=InnerRing;r<=OuterRing;r++){
+			if(OnPix[r][s]){
+				started=true;
+				good=true;
+				double ang=(s-0.5)*11.25;
+				for(int i=0;i<=40;i++){
+					x.push_back((11.0+r)*cos(ang*TMath::Pi()/180.));
+					y.push_back((11.0+r)*sin(ang*TMath::Pi()/180.));
+					ang+=11.25/40.;
+				}
+				break;
+			}
+		}
+		
+		if(!good&&started)break;
+	}
+	
+
+	double SGAP=s;
+	for(int S=SGAP-1;S>=SGAP-32;S--){
+		s=S;
+		if(s<0)s+=32;
+
+		bool good=false;
+		for(int r=OuterRing;r>=InnerRing;r--){
+			if(OnPix[r][s]){
+				good=true;
+				double ang=(s+0.5)*11.25;					
+				for(int i=0;i<=40;i++){
+					x.push_back((12.0+r)*cos(ang*TMath::Pi()/180.));
+					y.push_back((12.0+r)*sin(ang*TMath::Pi()/180.));
+					ang-=11.25/40.;
+				}
+				break;
+			}
+		}
+		
+		if(!good){
+			break;
+		}
+	}
+	
+
+	if(s==0){
+		exp.add_detector(x,y,pos,rot,true,true);
+		return;
+	}
+	
+	double SGAPB=s;
+	for(s=SGAPB+1;s<32;s++){
+		bool good=false;
+		for(int r=InnerRing;r<=OuterRing;r++){
+			if(OnPix[r][s]){
+				good=true;
+				double ang=(s-0.5)*11.25;
+				for(int i=0;i<=40;i++){
+					x.push_back((11.0+r)*cos(ang*TMath::Pi()/180.));
+					y.push_back((11.0+r)*sin(ang*TMath::Pi()/180.));
+					ang+=11.25/40.;
+				}
+				break;
+			}
+		}
+		
+		if(!good)break;
+	}
+	exp.add_detector(x,y,pos,rot,true,true);
+	return;
+}
+
+
+
