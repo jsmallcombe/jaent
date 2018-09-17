@@ -46,8 +46,14 @@ void exp_core::draw_phi(bool fill){if(gPad){
 	gPad->cd();
 	tp_proj->Draw();
 	for(int i=0;(unsigned)i<detectors.size();i++){
-		if(fill){detectors[i].tp()->SetFillColor(i+1);
-			detectors[i].tp()->Draw("sameF");}
+		if(fill){detectors[i].tp()->SetFillColor(i+2);
+			detectors[i].tp()->Draw("sameF");
+			
+			for(int p=0;p<detectors[i].Ntpp();p++){
+				detectors[i].tpp(p)->SetFillStyle(3004);
+				detectors[i].tpp(p)->Draw("sameF");
+			}
+		}
 		else detectors[i].tp()->Draw("same");
 	}
 	gPad->Update();

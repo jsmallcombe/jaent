@@ -269,7 +269,7 @@ private:
 	void det_check_hits(int,bool);
 	void det_check_hits_all(bool);
 	
-	bool all_hit_quick(double theta ,double phi);
+	bool all_hit_manual(double theta ,double phi);
 	
 	int current_multiplicity();
 	

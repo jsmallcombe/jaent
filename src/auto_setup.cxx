@@ -498,13 +498,13 @@ void AddS3BadPix(exp_core &exp,TVector3 pos,TRotation rot,int InnerRing,int Oute
 			int s=BadPix[i][1]+SectorOffsetN;
 			if(s>=32)s-=32;
 			if(s<0)s+=32;
-			cout<<endl<<BadPix[i][0]<<" "<<s;
+// 			cout<<endl<<BadPix[i][0]<<" "<<s;
 		OnPix[BadPix[i][0]][s]=false;
 	}
 	
-	for(unsigned int r=23;r>=0;r--){
+	for(int r=23;r>=0;r--){
 		cout<<endl;
-		for(unsigned int s=0;s<32;s++){
+		for(int s=0;s<32;s++){
 			cout<<OnPix[r][s];
 		}
 	}	

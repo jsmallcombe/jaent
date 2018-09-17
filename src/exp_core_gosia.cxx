@@ -26,6 +26,15 @@ void DecimalOut(ofstream& out,double number){
 //some default cases
 void exp_core::BuildOPINTI(int Nmesh,int NIntegrate,double thetamax){
 	
+	bool SimpleMesh=false;
+	if(Nmesh<0){
+		SimpleMesh=true;
+		Nmesh=-Nmesh;
+		// Introduced this routine because too many points caused issue real gamma detector calcs
+		// The phi mesh points should have minimal effect if gamma detectors are phi symmetric anyway
+	}
+	
+	
 	thetamax*=pi/180.;
 	
 	NIntegrate+=NIntegrate%2;
@@ -50,15 +59,40 @@ void exp_core::BuildOPINTI(int Nmesh,int NIntegrate,double thetamax){
 		
 	ShapeToPhiList(MeshThetaList,MeshPhiList,Nmesh,TMin,TMax);
 	
+	
+// 	double Emin=targ.;
+	double Emax=targ.beam_e_centre(beam_Z,beam_A,E_beam,TVector3(0.0,0.0,1.0),0.0);
+// 	double Emax=dist_target_KE_beam.Eval(0.0);//Needs thick target to have been set
+	double Emin=targ.beam_e_centre(beam_Z,beam_A,E_beam,TVector3(0.0,0.0,1.0),1.0);
+// 	double Emin=dist_target_KE_beam.Eval(1.0);//Needs thick target to have been set
+	int NE=5;
+	
+	double Emid=(Emin+Emax)*0.5;
+	
+	if(NE>20)NE=20;
+	
 	ofstream outI("OPINTI.txt");
-	outI<<"OP,INTI"<<endl<<"NE "<<-Nmesh<<" Emin Emax "<<TMin*180./TMath::Pi()<<" "<<(TMax)*180./TMath::Pi()<<endl<<"E1 E2 E3 ..."<<endl;	
+	outI<<"OP,INTI"<<endl<<NE<<" "<<-Nmesh<<" "<<Emin<<" "<<Emax<<" "<<TMin*180./TMath::Pi()<<" "<<(TMax)*180./TMath::Pi()<<endl;
+	
+	vector<double> Epoints;
+	for(int e=0;e<NE;e++){
+		double E=floor(Emin)+e*(ceil(Emax)-floor(Emin))/(NE-1);
+		Epoints.push_back(E);
+		DecimalOut(outI,E);
+	}
+	outI<<endl;	
 	
 	for(unsigned int i=0;i<MeshThetaList.size();i++){
 		DecimalOut(outI,MeshThetaList[i]);
 	}
 	outI<<endl;
 	for(unsigned int i=0;i<MeshPhiList.size();i++){
-		outI<<(int)(MeshPhiList[i].size()/2)<<endl;
+		int pairs=MeshPhiList[i].size()/2;
+		
+		if((SimpleMesh&&pairs>2)||pairs>4){
+			MeshPhiList[i]=vector<double>{-180,180};
+		}
+		outI<<pairs<<endl;
 		for(unsigned int j=0;j<MeshPhiList[i].size();j++){
 			DecimalOut(outI,MeshPhiList[i][j]);
 		}
@@ -70,7 +104,11 @@ void exp_core::BuildOPINTI(int Nmesh,int NIntegrate,double thetamax){
 	ShapeToPhiList(IntegThetaList,IntegPhiList,NIntegrate+1,TMin,TMax);
 	//NIntegrate+1 because N is segments, so N+1 boundary points
 
-	outI<<"NP "<<endl<<"E1 E2 E3 ..."<<endl<<"dEdX1 dEdX2 dEdX3 ..."<<endl<<"NI1 "<<-NIntegrate<<endl;
+	outI<<NE<<endl;
+	for(int e=0;e<NE;e++){DecimalOut(outI,Epoints[e]);}
+	outI<<endl;
+	for(int e=0;e<NE;e++){outI<<targ.dedx(beam_Z,beam_A,Epoints[e])<<" ";}
+	outI<<endl<<NE*2<<" "<<-NIntegrate<<endl;
 	
 	double dt=(IntegThetaList[1]-IntegThetaList[0])*0.5;
 	double meansum=0,phisum=0,meansumruth=0,phisumruth=0;
@@ -105,7 +143,39 @@ void exp_core::BuildOPINTI(int Nmesh,int NIntegrate,double thetamax){
 	
 		DecimalOut(outI,sum);
 	}
-	outI<<endl<<endl<<"Mean Theta: "<<meansum/phisum<<endl<<"Rutherford Weighted Mean Theta: "<<meansumruth/phisumruth;
+	
+	
+	meansum/=phisum;
+	meansumruth/=phisumruth;
+	
+	outI<<endl<<endl<<"Mean Theta: "<<meansum<<endl<<"Rutherford Weighted Mean Theta: "<<meansumruth<<endl;
+	outI<<"Rutherford Cross : "<<rutherford_crosssection_lab(beam_mass,targ_mass,targ_Z,beam_Z,Emid,TMin,TMax,0)<<endl;
+	
+	meansum*=pi/180;
+	meansumruth*=pi/180;
+	
+	double* res=kinetic_lab_calcs_E(Emid,beam_mass,targ_mass,meansum,targ_mass,beam_mass);
+	outI<<endl<<"Target Detection"<<endl<<"Mean Theta: "<<-res[5]*180/pi;
+	if(res[11]>0)outI<<" OR "<<-res[11]*180/pi;
+		
+	res=kinetic_lab_calcs_E(Emid,beam_mass,targ_mass,meansumruth,targ_mass,beam_mass);
+	outI<<endl<<"Rutherford Weighted Mean Theta: "<<-res[5]*180/pi;
+	if(res[11]>0)outI<<" OR "<<-res[11]*180/pi;
+	
+	outI<<endl<<"Rutherford Cross : "<<rutherford_crosssection_lab(beam_mass,targ_mass,targ_Z,beam_Z,Emid,TMin,TMax,1)<<flush;
+
+
+// 	kinetic_lab_calcs_readout();
+	
+	double deltathetaphi=0;
+	for(int i=0;(unsigned)i<detectors.size();i++){
+		for(int p=0;p<detectors[i].Ntpp();p++){
+			deltathetaphi+=detectors[i].tpp(p)->Integral();
+		}
+	}
+	cout<<endl<<" deltathetaphi "<<deltathetaphi<<endl;
+	
+	outI<<endl;
 	outI.close();
 }
 
@@ -226,7 +296,7 @@ void exp_core::ShapeToPhiList(vector<double>& ThetaList,vector<vector<double>>& 
 			
 			double phi=i*pi/1800.;
 			
-			bool inside=all_hit_quick(Theta,phi);
+			bool inside=all_hit_manual(Theta,phi);
 			
 			if(inside!=trackinside){
 				trackinside=!trackinside;
@@ -245,27 +315,38 @@ void exp_core::ShapeToPhiList(vector<double>& ThetaList,vector<vector<double>>& 
 
 
 void exp_core::FindThetaMinMax(double& tMin,double& tMax){
-	for(int t=0;t<=1800;t++){
-		double T=t*pi/1800.;
-		for(int p=0;p<=360;p++){
-			double P=p*pi/180.;
-			if(all_hit_quick(T,P)){
-				tMin=T;
-				t=1800;
-				break;
+	if(use_offsets){
+		for(int t=0;t<=1800;t++){
+			double T=t*pi/1800.;
+			for(int p=0;p<=360;p++){
+				double P=p*pi/180.;
+				if(all_hit_manual(T,P)){
+					tMin=T;
+					t=1800;
+					break;
+				}
 			}
 		}
+		
+		for(int t=1800;t>=0;t--){
+			double T=t*pi/1800.;
+			for(int p=0;p<=360;p++){
+				double P=p*pi/180.;
+				if(all_hit_manual(T,P)){
+					tMax=T;
+					t=0;
+					break;
+				}
+			}
+		}	
+	}else{
+		vector<double> minmax;
+		for(unsigned int det=0;det<detectors.size();det++){
+			minmax.push_back(detectors[det].ThetaMax());
+			minmax.push_back(detectors[det].ThetaMin());
+		}
+		std::sort(minmax.begin(),minmax.end());
+		tMin=minmax.front();
+		tMax=minmax.back();
 	}
-	
-	for(int t=1800;t>=0;t--){
-		double T=t*pi/1800.;
-		for(int p=0;p<=360;p++){
-			double P=p*pi/180.;
-			if(all_hit_quick(T,P)){
-				tMax=T;
-				t=0;
-				break;
-			}
-		}
-	}	
 }

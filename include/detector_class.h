@@ -90,6 +90,15 @@ class detector
 
 	
 	TGraph* tp(){return detector_tp;};
+	int Ntpp(){return detector_tp_part.size();};
+	TGraph* tpp(unsigned int i){
+		if(i<detector_tp_part.size())
+		return detector_tp_part[i];
+		return 0;
+	};
+	
+	double ThetaMin(){return theta_min;};
+	double ThetaMax(){return theta_max;};
 	
 	double X(){return detector_world_place.X();};
 	double Y(){return detector_world_place.Y();};
@@ -109,11 +118,15 @@ class detector
 
 	//detectors
 	TGraph* detector_tp;
+	vector<TGraph*> detector_tp_part;
 	TGraph* detector_xy;
 	TVector3 detector_world_place;
 	TRotation detector_world_rotate;
 	TVector3 detector_norm;	   
 	double plane;
+	
+	double theta_min;
+	double theta_max;
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////

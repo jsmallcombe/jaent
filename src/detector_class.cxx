@@ -15,6 +15,11 @@
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+bool PhiBorderCheck(double& A,double& B){
+		return ((abs(A-B)>pi)&&(((B>1.5*pi)&&(A<0.5*pi))||((A>1.5*pi)&&(B<0.5*pi))));
+}
+
+
 detector::detector() : energy(),energyG(), mass(), hit_pat(),energtTheta(),name(), detector_world_place(), detector_world_rotate(),detector_norm()
 {
 	detector_tp = new TGraph();
@@ -121,7 +126,11 @@ detector::detector(vector<double> x,vector<double> y,TVector3 place,TRotation ro
 			
 			world=(rot*world)+place;
 			
-			th.push_back(world.Theta());//temp store the tp points
+			double theta=world.Theta();
+			if(theta>theta_max||(i==0&&j==0))theta_max=theta;
+			if(theta<theta_min||(i==0&&j==0))theta_min=theta;
+			
+			th.push_back(theta);//temp store the tp points
 			ph.push_back(happy_phi(world));//0-2pi converted
 		}	
 	}
@@ -133,12 +142,10 @@ detector::detector(vector<double> x,vector<double> y,TVector3 place,TRotation ro
 		int j=i+1;
 		if((unsigned)j==th.size())j=0;
 		
-		if(abs(ph[i]-ph[j])>pi){
-			if((ph[j]>1.5*pi)||(ph[i]>1.5*pi)||(ph[j]<0.5*pi)||(ph[i]>0.5*pi)){
-				count++;
-				crossings.push_back(i);
-				crossings.push_back(j);
-			}
+		if(PhiBorderCheck(ph[i],ph[j])){
+			count++;
+			crossings.push_back(i);
+			crossings.push_back(j);
 		}
 	}
 
@@ -211,42 +218,95 @@ detector::detector(vector<double> x,vector<double> y,TVector3 place,TRotation ro
 	hit_pat=TH2D("hit_pat","hit_pat",200,detector_xy->GetXaxis()->GetXmin(),detector_xy->GetXaxis()->GetXmax(),200,detector_xy->GetYaxis()->GetXmin(),detector_xy->GetYaxis()->GetXmax());
 	
 	this->set_draw3();
+
+	///
+	/// New code to make multiple parts of shapes rather than wrap around shapes 
+	///
+
+	TGraph* g=new TGraph();
+	g->SetPoint(0,th[0],ph[0]);
+	
+	for(unsigned int i=0;i<ph.size()-1;i++){
+		int j=i+1;
+
+		if(PhiBorderCheck(ph[i],ph[j])){
+			vector<double> tx,px;
+			for(int k=(signed)ph.size()-1;k>=j;k--){
+				tx.push_back(th[k]);
+				px.push_back(ph[k]);
+				if(PhiBorderCheck(ph[k],ph[k-1])){
+					k=0;
+				}
+				th.pop_back();
+				ph.pop_back();
+			}
+			
+			double a=round(ph[i]/(2*pi))*pi*2;
+			double b=round(px[px.size()-1]/(2*pi))*pi*2;
+			
+			g->SetPoint(g->GetN(),th[i],a);
+			if(abs(a-b)>pi){
+				g->SetPoint(g->GetN(),0,a);
+				g->SetPoint(g->GetN(),0,b);
+			}
+			g->SetPoint(g->GetN(),tx[px.size()-1],b);
+			
+			for(int k=(signed)px.size()-1;k>=0;k--){
+				g->SetPoint(g->GetN(),tx[k],px[k]);
+			}
+			
+			detector_tp_part.push_back(g);
+			g=new TGraph();
+		}
+
+		g->SetPoint(g->GetN(),th[j],ph[j]);
+	}
+	detector_tp_part.push_back(g);
+	
 }
 
 detector::detector( const detector &obj){
+	detector_tp = new TGraph();
+	detector_xy = new TGraph();
+	ddraw3 = new TPolyLine3D();
+	ddraw2 = new TGraph();
 	
-	detector_tp=(TGraph*)obj.detector_tp->Clone();
-	detector_xy=(TGraph*)obj.detector_xy->Clone();
-	ddraw3=(TPolyLine3D*)obj.ddraw3->Clone();
-	ddraw2=(TGraph*)obj.ddraw2->Clone();
-// 	obj.detector_xy->Copy(*detector_xy);
-	
-	detector_world_place=obj.detector_world_place;
-	detector_world_rotate=obj.detector_world_rotate;
-	detector_norm=obj.detector_norm;
-	
-	energy=obj.energy;
-	energyG=obj.energyG;
-	mass=obj.mass;
-	hit_pat=obj.hit_pat;
-	energtTheta=obj.energtTheta;
-	plane=obj.plane;
-	name=obj.name;
+	*this = obj;
 }
 
 detector& detector::operator=( const detector &obj){
 	if(this!=&obj){//to prevent self-assignment errors
-		delete detector_tp;delete detector_xy;
+		delete detector_tp;
+		delete detector_xy;
+		delete ddraw3;
+		delete ddraw2;
+		for(unsigned int i=0;i<detector_tp_part.size();i++){
+			delete detector_tp_part[i];
+		}
+		detector_tp_part.clear();
 		
 		detector_tp=(TGraph*)obj.detector_tp->Clone();
 		detector_xy=(TGraph*)obj.detector_xy->Clone();
-// 		obj.detector_xy->Copy(*detector_xy);
+		ddraw3=(TPolyLine3D*)obj.ddraw3->Clone();
+		ddraw2=(TGraph*)obj.ddraw2->Clone();
+		
+		for(unsigned int i=0;i<obj.detector_tp_part.size();i++){
+			detector_tp_part.push_back((TGraph*)obj.detector_tp_part[i]->Clone());
+		}
 		
 		detector_world_place=obj.detector_world_place;
 		detector_world_rotate=obj.detector_world_rotate;
 		detector_norm=obj.detector_norm;
 		
-		energy=obj.energy;mass=obj.mass;hit_pat=obj.hit_pat;energtTheta=obj.energtTheta;plane=obj.plane;name=obj.name;
+		energy=obj.energy;
+		energyG=obj.energyG;
+		mass=obj.mass;
+		hit_pat=obj.hit_pat;
+		energtTheta=obj.energtTheta;
+		plane=obj.plane;
+		name=obj.name;
+		theta_min=obj.theta_min;
+		theta_max=obj.theta_max;
 	}
 	return (*this); // for cascading assignment
 }

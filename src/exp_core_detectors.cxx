@@ -107,14 +107,24 @@ bool exp_core::det_hit_quick(int det,int part){
 	return false;	
 }
 
-// Ignore all particles & offset stuff, just check all detector for a hit
-bool exp_core::all_hit_quick(double theta ,double phi){
+
+// Ignore particles defintions & obstructions, just check all detector for a hit at certain angles
+bool exp_core::all_hit_manual(double theta ,double phi){
 	phi=happy_phi(phi);
+	TVector3 tmp_vec;
+	tmp_vec.SetMagThetaPhi(1,theta,phi);
 	for(unsigned int det=0;det<detectors.size();det++){
-		if(detectors[det].tp()->IsInside(theta,phi))return true;
+		if(use_offsets){
+			if(detectors[det].hit_offset_check(tmp_vec,&offset_primary))return true;
+		}else{
+			if(detectors[det].tp()->IsInside(theta,phi))return true;
+		}
 	}
 	return false;
 }
+
+
+
 
 
 /// check all detectors for one particle
