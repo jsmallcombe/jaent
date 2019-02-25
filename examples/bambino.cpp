@@ -53,24 +53,25 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//
 	// Set the target
 	//
-	//target tharget(1,2,1000,TVector3(0,0,-1),2,stopper_mg*1000,79,197); //compound 2 polyethelyn	
+// 	target tharget(1,2,1000,TVector3(0,0,-1),2,stopper_mg*1000,79,197); //compound 2 polyethelyn	
 // 	expr.set_targ(target(82,208,1.5));
-	expr.set_targ(target(28,58,0.98));
+// 	expr.set_targ(target(28,58,0.98));
 // 	expr.set_targ(target(13,27,1.));
+	expr.set_targ(target(6,12,0.5));
 
 	//
 	// Set the beam
 	//
-	
-	expr.set_beam(68,158);
+	expr.set_beam(70,158);
+// 	expr.set_beam(68,158);
 // 	expr.set_beam(54,131);
 	
 	//
 	// Physics
 	//
 	
-// 	double MeV=safe_coulex_beam(expr.get_BA(),expr.get_BZ(),expr.get_TA(),expr.get_TZ(),TMath::Pi());
-	double MeV=3.9*expr.get_BA();
+	double MeV=safe_coulex_beam(expr.get_BA(),expr.get_BZ(),expr.get_TA(),expr.get_TZ(),TMath::Pi());
+// 	double MeV=3.9*expr.get_BA();
 // 	double MeV=2.6*expr.get_BA();	
 	
 	expr.set_E_beam(MeV);
@@ -92,7 +93,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	// Detector Setup
 	//
 
-	double ZZa=32;
+	double ZZa=20;
 	double ZZb=20;
 	
 	double angles[] = {atan(10./ZZa),atan(36./ZZa),atan(10./ZZb),atan(36./ZZb)};
@@ -101,7 +102,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	sort(angles, angles + size);
 	
 	add_S3(expr,ZZa,true);
-	add_S3(expr,ZZb,true);
+// 	add_S3(expr,ZZb,true);
 	
 // 	expr.print_detectables();
 // 	expr.print_doubles();

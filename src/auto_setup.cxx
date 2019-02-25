@@ -197,12 +197,12 @@ void add_micron_S(exp_core &exp,double ZZ,bool detail,int type){
 			ypcb.push_back(y);
 		}		
 		double pitch=(RR-rr)/N;	
-// 		for(int i=0;i<N;i++){
-// 			add_annulus(exp,ZZ,rr+(i*pitch)+pitch*0.05,rr+((i+1)*pitch));
-// 			stringstream ss;
-// 			ss<<"S"<<type<<" Ring "<<i;
-// 			exp.SetDetName(ss.str());			
-// 		}
+		for(int i=0;i<N;i++){
+			add_annulus(exp,ZZ,rr+(i*pitch)+pitch*0.05,rr+((i+1)*pitch));
+			stringstream ss;
+			ss<<"S"<<type<<" Ring "<<i;
+			exp.SetDetName(ss.str());			
+		}
 		exp.add_detector(xpcb,ypcb,TVector3(0.0,0.0,ZZ));
 		stringstream ss;
 		ss<<"S"<<type<<" PCB";

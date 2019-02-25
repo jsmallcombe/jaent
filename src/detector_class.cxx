@@ -457,9 +457,9 @@ void detector::Fill(TLorentzVector* four,TVector3* offset){
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-TH1D* add_resolution(TH1D* in,double percent,double at){
+TH1* add_resolution(TH1* in,double percent,double at){
 	string s=in->GetName();
-	TH1D* blur=(TH1D*)in->Clone((s+"_blur").c_str());
+	TH1* blur=(TH1*)in->Clone((s+"_blur").c_str());
 	blur->Reset();
 	TAxis* x=in->GetXaxis();
 	TRandom2 rand;rand.SetSeed();

@@ -137,6 +137,6 @@ class detector
 };
 
 
-TH1D* add_resolution(TH1D*,double=0.46,double=122);
+TH1* add_resolution(TH1*,double=0.46,double=122);
 
 #endif 

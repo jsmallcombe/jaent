@@ -40,18 +40,19 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//
 	// Set the target
 	//
-	target tharget(28,58,1.0); //nickel
+// 	target tharget(28,58,1.0); //nickel
 // 	target tharget(78,196,2.0); //nickel
-	experiment.set_targ(tharget);
+// 	experiment.set_targ(tharget);
 
 	
 	//
 	// Set the beam
 	//
-	experiment.set_beam("Dy",156,578.4);
+	experiment.set_beam("Mg",22,78);
+	experiment.set_targ("Pd",110);
 	experiment.set_elastic();
-// // 	experiment.set_ejec(1,1);
-	experiment.set_E_star(5);
+	experiment.set_reco("Mg",22);
+	experiment.set_E_star(1.274);
 	
 // 	experiment.set_beam("Kr",80,80*4.17);
 // 	experiment.set_elastic();
@@ -76,7 +77,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	
 	experiment.draw_primary_kinematics();
 
-	TFile outfile("Dy156.root","RECREATE");
+	TFile outfile("KGtest.root","RECREATE");
 	can_view->Write("kinematics");
 	
 	
