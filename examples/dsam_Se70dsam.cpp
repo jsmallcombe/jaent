@@ -44,19 +44,19 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//    
     experiment.set_targ(target(20,40,0.01,180.0,0,40,79,197));
 	experiment.set_beam(18,36,120);
-	experiment.set_reco(34,72);
-	experiment.set_E_star(1.5);
+	experiment.set_reco(35,73);
+	experiment.set_E_star(4.0);
 	experiment.print_reaction();
     
 	experiment.set_target_interaction(2);
-	experiment.set_gamma(700);
- 	experiment.set_lifetime_ns(0.001,1.54,19.32);//includes densities
+	experiment.set_gamma(1166);
+ 	experiment.set_lifetime_ns(0.01,1.54,19.32);//includes densities
 	
 	cout<<endl;
 	experiment.print_target();
 	
 	//This line changes this to a plunger experiment
-	experiment.set_stopper_seperation(0.01);
+// 	experiment.set_stopper_seperation(0.01);
 	
 	//
 	// Now the reaction is set we add out detectors
@@ -97,10 +97,8 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	experiment.draw_exp();
 	can_view->cd(2);
 	experiment.draw_target_interaction(0,false,50000);
-// 	experiment.draw_decay_Z(1,false);	
+// 	experiment.draw_decay_Z(1,false);
 
-
-	
 	// Next we simulate some events which will be recorded as good and saved to detector
 	experiment.basic_hit_count(100000,false,0,0,0,1);
 	

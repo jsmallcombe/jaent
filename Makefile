@@ -38,8 +38,8 @@ $(BINDIR)/%.o: $(SOURCEDIR)/%.cxx $(INCLUDE)/exp_core.h $(BINDIR)/detector_class
 	$(CC) $(CFLAGS) -o $@ -c $< $(LIBRS)
 	
 clean: 
-	rm $(BINDIR)/*.o
 	rm $(TARG)
+	rm $(BINDIR)/*
 
 examples/%: $(TARG) FORCE
 	$(CC) -o bin/$(subst examples/,,$(subst .cpp,,$@)) $(CFLAGS) $@ $(LIBRS) $(BINDIR)/detector_class.o $(BINDIR)/exp_core_total.o $(BINDIR)/auto_setup.o
