@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <james_hist_formatting.h>
+#include <j_hist_formatting.h>
 
 #include "exp_core.h"
 #include "detector_class.h"

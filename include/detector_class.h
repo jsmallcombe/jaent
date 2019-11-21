@@ -28,11 +28,11 @@
 // #include <range.h>
 #include <TGraph.h>
 
-// #include "james_nuclear_data_ob.h"
-// #include "james_detector_func.h"
-#include "james_physics.h"
-// #include "james_fission.h"
-// #include "james_target.h"
+// #include "j_nuclear_data_ob.h"
+// #include "j_detector_func.h"
+#include "j_physics.h"
+// #include "j_fission.h"
+// #include "j_target.h"
 
 
 

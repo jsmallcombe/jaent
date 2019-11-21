@@ -5,7 +5,7 @@ INCLUDE = $(shell pwd)/include
 ROOT_LIBS = `root-config --glibs`
 ROOT_GCC_FLAGS = `root-config --cflags`
 
-EXTERNAL_LIBS = -ljames_phys -lJanalysistools -lgsl
+EXTERNAL_LIBS = -ljroot_phys -lX11 -lJanalysistools -lgsl
 CC = g++
 CFLAGS = -std=c++11 -g -fPIC -Wall $(ROOT_GCC_FLAGS) -I$(INCLUDE) 
 LIBRS = -L$(INCLUDE) $(EXTERNAL_LIBS) $(ROOT_LIBS)
