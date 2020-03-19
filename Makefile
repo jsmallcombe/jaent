@@ -21,7 +21,7 @@ EXPCORE = $(wildcard $(SOURCEDIR)/exp_core_*)
 EXPCOROBJ = $(patsubst $(SOURCEDIR)/%.cxx,$(BINDIR)/%.o,$(EXPCORE))
 
 $(TARG):$(MAIN) $(BINDIR)/exp_core_total.o $(BINDIR)/auto_setup.o  $(BINDIR)/detector_class.o
-	$(CC) -o $@ $(CFLAGS) $(MAIN) $(LIBRS) $(BINDIR)/detector_class.o $(BINDIR)/exp_core_total.o $(BINDIR)/auto_setup.o
+	$(CC) -o $@ $(CFLAGS) $(MAIN) $(BINDIR)/detector_class.o $(BINDIR)/exp_core_total.o $(BINDIR)/auto_setup.o $(LIBRS)
 # 	-lstdc++
 # 	$(CC) $(CFLAGS) -o $@ $(LIBRS) bin/DictOutput.cxx -I. $(OBJECTS)
 

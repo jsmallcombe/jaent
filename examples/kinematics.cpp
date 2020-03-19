@@ -48,11 +48,11 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	//
 	// Set the beam
 	//
-	experiment.set_beam("Mg",22,78);
-	experiment.set_targ("Pd",110);
+	experiment.set_beam("Hg",206,1520);
+	experiment.set_targ("H",2);
 	experiment.set_elastic();
-	experiment.set_reco("Mg",22);
-	experiment.set_E_star(1.274);
+	experiment.set_reco("Hg",207);
+	experiment.set_E_star(0.5);
 	
 // 	experiment.set_beam("Kr",80,80*4.17);
 // 	experiment.set_elastic();
