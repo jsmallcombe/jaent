@@ -67,7 +67,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	vector< double > TargetGammas={547.5,576.5};
 	vector< double > TGamRelInt={100,20};// should be <= 1000
 	bool detectbeam=true;
-	bool spice=true;
+	bool spice=false;
 	//S3 positions
 	double ZZa=32;
 	double ZZb=32;

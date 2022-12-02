@@ -50,7 +50,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
     
 	experiment.set_target_interaction(2);
 	experiment.set_gamma(1166);
- 	experiment.set_lifetime_ns(0.01,1.54,19.32);//includes densities
+ 	experiment.set_lifetime_ns(0.0001,1.54,19.32);//includes densities
 	
 	cout<<endl;
 	experiment.print_target();
