@@ -49,7 +49,7 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	experiment.print_reaction();
     
 	experiment.set_target_interaction(2);
-	experiment.set_gamma(782);
+	experiment.set_gamma(1200);
 	
 	
 	//
@@ -109,10 +109,10 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
     
     can_view->cd(3);
     sum->Draw();
-    sum->GetXaxis()->SetRangeUser(650,750);
+    sum->GetXaxis()->SetRangeUser(1000,1400);
     one->Draw("same");
 
-    
+    sum->SaveAs("test.root");
     
 	cout<<endl<<"/////////////////////////////////////////////////////////////////////////"<<endl;	
 	app->Run();

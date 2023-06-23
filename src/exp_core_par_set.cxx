@@ -206,8 +206,15 @@ void exp_core::set_QV(){
 void exp_core::set_beam_calcs(){
 	current_target_fraction=0.5;decay_target_fraction=0.5;
 	
-	if(targ.GetThickness()>0)E_beam_targ=targ.beam_e_centre(beam_Z,beam_A,E_beam);
-	else E_beam_targ=E_beam;
+	if(targ.GetThickness()>0){
+        // Do the quick calcs for target center
+        // If non-uniform distribution has been requested this will be overwritten later by calc_thick_target_interaction()
+        E_beam_targ=targ.beam_e_centre(beam_Z,beam_A,E_beam);
+        
+        // If the beam doesnt penetrate the target
+        if(E_beam_targ<0.5*E_beam)E_beam_targ=0.5*E_beam;
+        
+    }else E_beam_targ=E_beam;
 	P_beam_targ=get_rel_mom(E_beam_targ,beam_mass);
 
 	beta_CoM=get_com_beta(P_beam_targ,beam_mass,targ_mass);

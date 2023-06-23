@@ -47,11 +47,14 @@ double exp_core::set_rutherford(double thetamin,double thetamax){ //input rad,ra
 	if(thick_target_calcs)if(targ.GetThickness()>0){
 		this->set_target_interaction(3);
 		double sumpartcrosssec=0;
+        int idist=0;
 		for(int i=0;i<dist_target_KE_0.GetN();i++){
 			double x,y;
 			dist_target_KE_0.GetPoint(i,x,y);
+            if(y<=0)break;
 			sumpartcrosssec+=rutherford_crosssection(beam_Z,targ_Z,y,thetamin,thetamax);
-		}sumpartcrosssec/=dist_target_KE_0.GetN();
+            idist++;
+		}sumpartcrosssec/=idist;
 		return sumpartcrosssec;
 	}
 	

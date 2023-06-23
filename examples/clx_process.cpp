@@ -148,7 +148,7 @@ TCanvas bob;
 					
 					cout<<endl<<load_g.str();
 					
-					double safecm=safe_coulex_angle(b_a,b_z,tharget.targ_A,tharget.targ_Z,e); //[Inputs(A1,Z1,A2,Z2,E_lab)]	
+					double safecm=safe_coulex_angle(b_a,b_z,tharget.A(),tharget.Z(),e); //[Inputs(A1,Z1,A2,Z2,E_lab)]	
 					
 					for(double z=10;z<40.0;z+=0.5){//LOOP S3 POSITIONS
 						

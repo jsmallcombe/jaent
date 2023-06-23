@@ -113,8 +113,8 @@ TH1::AddDirectory(kFALSE);//avoid name overwrites but could cause other memory h
 	stringstream ss;
 	ss<<"outputs/SPICE_"<<experiment.channelnames(experiment.get_BZ(),experiment.get_BA());
 	ss<<"_"<<experiment.channelnames(experiment.get_TZ(),experiment.get_TA());
-	if(tharget.backing_thickness>0)
-		ss<<"_"<<experiment.channelnames(tharget.backing_Z,tharget.backing_A)<<"_backed";
+	if(tharget.GetBackThickness()>0)
+		ss<<"_"<<experiment.channelnames(tharget.bZ(),tharget.bA())<<"_backed";
 	ss<<"_"<<ebeam<<"MeV";
 	string file_title=ss.str();
 	

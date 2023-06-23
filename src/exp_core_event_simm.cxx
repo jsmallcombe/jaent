@@ -167,7 +167,7 @@ void exp_core::gen_event(){
 	
 	//If target energy losses have been requested
 	//calc energy loss going out of the target
-	if(targ.GetThickness()>0)this->gen_Eloss();
+	if(thick_target_calcs)if(targ.GetThickness()>0)this->gen_Eloss();
 		
 // 	if(targ.GetThickness()>0&&thick_target_calcs)this->null_target_pos();//reset beam energies etc to nominal values out of paranoia
 
@@ -226,8 +226,8 @@ void exp_core::gen_decay(){
 		double time_ns_CoM=rand.Exp(lifetime);
 		
 		//calculate target slowing/stopping
-		if(targ.GetThickness()>0){
-			decay_target_fraction=current_target_fraction;//this line might be unneeded
+		if(thick_target_calcs&&targ.GetThickness()>0){
+			decay_target_fraction=current_target_fraction; //this line might not be needed
 			//after this call decay_target_
 			post_beta=this->lifetime_track(0,time_ns_CoM,decay_target_fraction);
 			labboost.SetMag(post_beta);
