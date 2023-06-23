@@ -141,8 +141,8 @@ void exp_core::set_elastic(){
 	ejec_A=beam_A;
 	ejec_mass=beam_mass;
 	reco_E_star=0;
-	this->set_all_base_E_calcs();
 	targ_fusion=false;
+	this->set_all_base_E_calcs();
 }	
 
 void exp_core::set_Q_manual(double Qma)
